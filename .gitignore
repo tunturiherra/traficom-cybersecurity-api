@@ -1,0 +1,57 @@
+# Visual Studio -tiedostot
+.vs/
+*.vscode/
+*.suo
+*.user
+*.userprefs
+
+# Build-tiedostot
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# NuGet Package -tiedostot
+*.nupkg
+**/packages/*
+*.snupkg
+
+# Käännöksen aikana luodut tiedostot
+*.log
+*.tlog
+*.tmp
+*.temp
+*.vsix
+
+# Väliaikaiset tiedostot
+*.sln.docstates
+*.sln.ide
+*.sln.ide.*
+
+# Resurssitiedostot
+*.resx
+*.resources
+*.userprefs
+
+# Testitiedostot
+*.coverlet.xml
+*.coverage
+
+# Git-työkalut
+*.swp
+*~
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js -tiedostot
+node_modules/
+npm-debug.log
+yarn-error.log
+
+
