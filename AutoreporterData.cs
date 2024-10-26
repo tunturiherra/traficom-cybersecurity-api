@@ -1,63 +1,71 @@
-// AutoreporterData.cs
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-
+    // Tässä luokasta määritetään, mitä haetaan rajapinnasta
     public class AutoreporterData
     {
         [JsonPropertyName("ID")]
-        public int ID { get; set; }
+        public int id { get; set; }
 
         [JsonPropertyName("MainCategory")]
-        public string MainCategory { get; set; }
+        public string mainCategory { get; set; }
 
         [JsonPropertyName("SubCategory")]
-        public string SubCategory { get; set; }
+        public string subCategory { get; set; }
 
         [JsonPropertyName("CountryCode")]
-        public string CountryCode { get; set; }
+        public string countryCode { get; set; }
 
         [JsonPropertyName("City")]
-        public string City { get; set; }
+        public string city { get; set; }
     }
 
-    public class AutoreporterResponse
+// Autoreporterin rajapinnasta saapuva vastaus, kun lähetetään pyyntöä
+public class AutoreporterResponse
+{
+    [JsonPropertyName("@odata.context")]
+    public string OdataContext { get; set; }
+    
+    [JsonPropertyName("value")]
+    public List<AutoreporterData> Value { get; set; }
+}
+
+// Vastaa Autoreporterin tietojen hakemisesta rajapinnasta. Sisältää itse osoitteen, HTTP-pyynnöt ja
+// vastaukset rajapinnasta. Täältä myös data tuodaan käytettäväksi.
+public class AutoreporterService
+{
+    private static readonly HttpClient client = new HttpClient();
+    
+    // Rajapinnan osoite tässä
+    private const string ApiUrl = "https://opendata.traficom.fi/api/v13/Autoreporter";
+
+    // Asynkroninen metodi, joka hakee Autoreporterin tiedot rajapinnasta.
+    public async Task<AutoreporterResponse> FetchAutoreporterDataAsync()
     {
-        [JsonPropertyName("@odata.context")]
-        public string OdataContext { get; set; }
-
-        [JsonPropertyName("value")]
-        public List<AutoreporterData> Value { get; set; }
-    }
-
-    public class AutoreporterService
-    {
-        private static readonly HttpClient client = new HttpClient();
-        private const string ApiUrl = "https://opendata.traficom.fi/api/v13/Autoreporter";
-
-        public async Task<AutoreporterResponse> FetchAutoreporterDataAsync()
+        try
         {
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync(ApiUrl);
-                response.EnsureSuccessStatusCode();
-
-                string responseBody = await response.Content.ReadAsStringAsync();
-                AutoreporterResponse data = JsonSerializer.Deserialize<AutoreporterResponse>(responseBody);
-                return data;
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine($"HTTP request failed: {e.Message}");
-            }
-            catch (JsonException e)
-            {
-                Console.WriteLine($"JSON parsing failed: {e.Message}");
-            }
-            return null;
+            // Tehdään HTTP GET -pyyntö API:iin.
+            // Luetaan vastaus ja deserialisoidaan se objektiksi AutoreporterResponse.
+            HttpResponseMessage response = await client.GetAsync(ApiUrl);
+            
+            response.EnsureSuccessStatusCode();
+            
+            string responseBody = await response.Content.ReadAsStringAsync();
+            AutoreporterResponse data = JsonSerializer.Deserialize<AutoreporterResponse>(responseBody);
+            
+            // Palautetaan haettu data.
+            return data;
         }
+        // Käsitellään mahdolliset HTTP-pyynnön virheet.
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"HTTP request failed: {e.Message}");
+        }
+        catch (JsonException e)
+        {
+            Console.WriteLine($"JSON parsing failed: {e.Message}");
+        }
+        // Palautetaan null, jos tietojen hakeminen jostain syystä epäonnistuu.
+        return null;
     }
+}

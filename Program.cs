@@ -1,7 +1,4 @@
-﻿// Program.cs
-using System;
-using System.Threading.Tasks;
-    class Program
+﻿    class Program
     {
         static async Task Main(string[] args) 
         {
@@ -14,7 +11,9 @@ using System.Threading.Tasks;
                 Console.WriteLine("Data fetched from Traficom Autoreporter API:");
                 foreach (var item in response.Value)
                 {
-                    Console.WriteLine($"ID: {item.ID}, City: {item.City}, CountryCode: {item.CountryCode}\nMainCategory: {item.MainCategory}, SubCategory: {item.SubCategory}");
+                    // Tulostetaan näkyviin rajapinnasta merkittävimmät tiedot, eli ID, kohdekaupunki maakoodin kanssa,
+                    // haittaohjelman pääkategoria ja sen alikategoria tarkentamaan haittaohjelmatyyppiä.
+                    Console.WriteLine($"ID: {item.id}, City: {item.city}, {item.countryCode}\nMainCategory: {item.mainCategory}, SubCategory: {item.subCategory}");
                     Console.WriteLine();
                 }
             }
